@@ -18,7 +18,8 @@ export function eligibleLines(fish) {
 }
 
 export function lineCardHint(fish) {
-  return `<div class="line-card-hint"><span>Леска · нижний вес</span><strong>≤ ${weight(lineLowerWeightLimit(fish))}</strong></div>`;
+  const count = eligibleLines(fish).length;
+  return `<div class="line-card-hint"><span>Леска по толщине</span><strong>${count === fishingLines.length ? 'Любая' : `Подходят ${count} из ${fishingLines.length}`}</strong></div>`;
 }
 
 function lineList(lines, fish) {
@@ -31,5 +32,6 @@ function lineList(lines, fish) {
 
 export function lineDetails(fish, headingTag='h3') {
   const lines=eligibleLines(fish);
-  return `<section class="detail-section line-section"><${headingTag}>Леска для поклёвки</${headingTag}><p class="line-limit">Нижний вес лески <strong>не более ${weight(lineLowerWeightLimit(fish))}</strong></p><p class="note">Смотрите первое число в весовом диапазоне самой лески. Правило одинаково для магазинных и самодельных моделей.</p><details class="line-picker"><summary>Подходят по нижнему порогу: ${lines.length} моделей</summary><p class="note">Список проверяет нижний порог лески. Для поклёвки нужны также подходящие удочка, наживка и условия ловли; для вываживания — достаточная прочность всей снасти.</p><h4>Магазинные</h4>${lineList(lines.filter(l=>!l.handmade),fish)}<h4>Самодельные</h4>${lineList(lines.filter(l=>l.handmade),fish)}</details><p class="note">Расчёт: максимальный обычный вес вида × 6. Слишком толстая леска исключает вид ещё до определения трофея. Улучшение «+» не меняет этот нижний порог.</p></section>`;
+  const anyLine = lines.length === fishingLines.length;
+  return `<section class="detail-section line-section"><${headingTag}>Леска для поклёвки</${headingTag}><p class="line-limit"><strong>${anyLine ? 'По толщине подходит любая леска.' : 'Подходящие по толщине лески — в списке ниже.'}</strong></p><p class="note">${anyLine ? 'Все модели в каталоге проходят ограничение по толщине. ' : 'Слишком толстые модели исключены из списка. '}Прочность для вываживания подбирайте под вес и агрессивность рыбы.</p><details class="line-picker"${anyLine ? '' : ' open'}><summary>${anyLine ? 'Все модели лесок' : 'Подходящие модели'} (${lines.length})</summary><p class="note">Для поклёвки нужны также подходящие удочка, наживка и условия ловли. Список проверяет только ограничение по толщине лески.</p><h4>Магазинные</h4>${lineList(lines.filter(l=>!l.handmade),fish)}<h4>Самодельные</h4>${lineList(lines.filter(l=>l.handmade),fish)}</details><details class="line-explanation"><summary>Как определяется подходящая леска</summary><p class="note">Игра сравнивает нижний вес лески, делённый на 6, с максимальным обычным весом вида. Для этого вида: ${weight(fish.maxWeight)} × 6 = ${weight(lineLowerWeightLimit(fish))}. Это предел для первого числа в весовом диапазоне лески, а не требуемая прочность.</p><p class="note">Слишком толстая леска исключает вид ещё до определения трофея. Улучшение «+» не меняет нижний порог. Если порог отсекает часть мелких экземпляров, это отмечено у модели.</p></details></section>`;
 }
