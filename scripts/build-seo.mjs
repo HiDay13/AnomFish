@@ -1,3 +1,4 @@
+import { lineDetails } from '../lines.mjs';
 import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {categories, depths, grounds, regions, formatWeight as weight, rarityTiers} from '../core.mjs';
@@ -29,7 +30,7 @@ for (const [index,f] of fishes.entries()) {
 <title>${esc(title)}</title><meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${url}"><meta name="robots" content="index,follow,max-image-preview:large">
 <meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:site_name" content="Атлас рыб AnomFish"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${base+esc(f.image)}"><meta property="og:image:alt" content="${esc(f.name)}">
-<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../seo.css">
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../seo.css"><link rel="stylesheet" href="../lines.css">
 <script type="application/ld+json">${JSON.stringify(structured).replaceAll('<','\\u003c')}</script>
 </head><body>
 <a class="skip-link" href="#fish-content">К описанию улова</a>
@@ -43,6 +44,7 @@ for (const [index,f] of fishes.entries()) {
 <section class="detail-section"><h2>Данные каталога</h2><p class="note">Клиент v10 · снимок ${date}. Автоматического обновления нет. Для специальных находок могут действовать дополнительные условия снастей.</p></section>
 </div><div class="detail-right">
 <section class="detail-section"><h2>Вес и редкость</h2><div class="weight-summary"><strong>${weight(f.minWeight)} — ${weight(f.maxWeight)}</strong><span>обычный диапазон</span></div><div class="tier-grid">${tiers.map((t,i)=>`<div class="tier-cell" style="--rarity:${t.color}"><span class="tier-name">${esc(t.name)}</span><span class="tier-weight">${i===0?`${weight(t.min)} – &lt; ${weight(t.max)}`:`от ${weight(t.min)}`}</span></div>`).join('')}</div><p class="note">Порог следующей редкости завершает предыдущий диапазон. Трофей — вес строго больше ${weight(f.maxWeight)}. ${weight(f.rareWeight)} — опорный порог эпической редкости, а не максимальный возможный вес.</p></section>
+${lineDetails(f,'h2')}
 <section class="detail-section"><h2>Наживки</h2>${items(f.bait,'bait')}</section>
 <section class="detail-section"><h2>Прикормки</h2>${items(f.lure,'lure')}</section>
 <section class="detail-section"><h2>Водоёмы</h2>${locs.length?`<ul class="seo-locations">${locs.map(l=>`<li>${image(l)}<div><h3>${esc(l.name)}</h3><p>${esc(regions[l.region]||l.region)} · ${l.minFishLevel}–${l.maxFishLevel} ур.</p><p class="note">${l.enabled?`Разряд ${l.rank} · ${l.radTypes.includes('cold')?'Холод':'Радиация'} ${l.radRate}`:'Отключён в данных игры'}</p></div></li>`).join('')}</ul>`:'<p class="note">В списках водоёмов клиента этот вид не указан. Постоянное место ловли по этим данным определить нельзя.</p>'}</section>
