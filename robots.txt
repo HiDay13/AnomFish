@@ -1,0 +1,6 @@
+# For GitHub project Pages this file must be served at:
+# https://hiday13.github.io/robots.txt
+# /AnomFish/robots.txt is only a ready-to-copy template; crawlers ignore it there.
+User-agent: *
+Allow: /AnomFish/
+Sitemap: https://hiday13.github.io/AnomFish/sitemap.xml
